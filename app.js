@@ -1,8 +1,10 @@
-var http = require('http');
-var fs = require('fs');
-var routes = require('./routes');
+const http = require('http');
+const fs = require('fs');
+const routes = require('./routes');
 
-var port = 4000
+const port = 4000;
+const ip = '127.0.0.1';
 
+http.createServer(routes.handleRequest).listen(port, ip);
 
-http.createServer(routes.handleRequest).listen(port);
+console.log(`listening on ${ip}:${port}`);

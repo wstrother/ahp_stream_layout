@@ -1,36 +1,41 @@
 {
-  "stream": {
-    "size": [1366, 768],
-    "colorkey": [0, 255, 0]
+  "layouts": {
+    "speedrun": {
+      "elements": [
+        {"id": "side-panel"},
+        {"id": "panel-header"},
+        {"id": "stream-header"}
+      ]
+    },
+
+    "brb": {
+      "elements": [
+        {
+          "id": "stream-header",
+          "position": [191, 348],
+          "size": [976, 100]
+        }
+      ]
+    }
   },
 
-  "elements": [
-    {
-      "id": "side-panel",
-      "size": [310, 768],
-      "position": [9, 0],
+  "elements": {
+    "side-panel": {
+      "size": [310, 750],
+      "position": [9, 18],
       "image": "side-panel.png"
     },
 
-    {
-      "id": "channel-logo",
-      "size": [356, 110],
-      "position": [-6, -2],
-      "image": "ahp-logo.png"
-    },
-
-    {
-      "id": "panel-header",
+    "panel-header": {
       "size": [304, 77],
       "position": [20, 206],
-      "content": "Very Hard - <i class='stock-count'>(1 Stock)</i>"
+      "content": "Very Hard - <stocks>(1 Stock)</stocks>"
     },
 
-    {
-      "id": "stream-header",
+    "stream-header": {
       "size": [975, 100],
       "position": [381, 0],
       "content": "SSB Speed Runs"
     }
-  ]
+  }
 }

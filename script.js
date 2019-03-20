@@ -3,7 +3,6 @@ function getJsonContent(filename) {
     url: filename,
     dataType: 'json',
     success: function(data) {
-      console.log(JSON.stringify(data));
       compareData(data);
     },
     error: function(jqXHR, status, err) {
@@ -29,5 +28,5 @@ function setPageBody(text) {
 
 $(document).ready(function() {
   bodyElement = $('#page-body');
-  setInterval(function(){ getJsonContent("info.json");}, 3000);
+  setInterval(function(){ getJsonContent("layout.json");}, 3000);
 });

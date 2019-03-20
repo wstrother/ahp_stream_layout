@@ -1,62 +1,40 @@
-function getJsonContent(filename, func) {
-  $.ajax({
-    url: filename,
-    dataType: 'json',
-    success: func,
-    error: function(jqXHR, status, err) {
-      console.log(err);
-    }
-  });
-}
+const render = require('./render');
+const fs = require('fs');
+var head = "";
 
-function renderDiv(body, data) {
-  var inner = `<div id="${data.id}">${data.content || ""}</div>`;
-  var style = getDivStyle(data);
-
-  body.append(inner);
-  $(`#${data.id}`).css(style);
-
-  console.log(JSON.stringify(data));
-}
-
-function getDivStyle(data) {
-  var style = {
-    'width': `${data.size[0]}px`,
-    'height': `${data.size[1]}px`,
-    'left': `${data.position[0]}px`,
-    'top': `${data.position[1]}px`,
-    'position': 'absolute'
+fs.readFile('./head.html', 'utf8', (err, data) => {
+  if (err) {
+    throw err;
+  } else {
+    head = data;
   }
-
-  // if (data.image) {
-  //   style['background-image'] = data.image;
-  // }
-
-  return style
-}
-
-function addLayoutElements(body, elements) {
-  elements.forEach(function(element) {
-    renderDiv(body, element);
-  });
-}
-
-function setLayoutBody(body, data) {
-  var color = data.colorkey || [0, 0, 0];
-
-  body.css({
-    'padding': '0',
-    'margin': '0',
-    // 'background-color': `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-    'width': `${data.size[0]}px`,
-    'height': `${data.size[1]}px`
-  });
-}
-
-$(document).ready(function () {
-  getJsonContent('layout.json', function (data) {
-    var bodyElement = $('body');
-    addLayoutElements(bodyElement, data.elements);
-    setLayoutBody(bodyElement, data.stream);
-  });
 });
+
+function getElementsData(layout, elements) {
+  let output = [];
+  let name = "";
+
+  layout.elements.forEach((data) => {
+      name = data.id;
+      output.push(Object.assign({}, elements[name], data));
+  });
+
+  return output;
+}
+
+function getLayoutHtml(name, data) {
+  let body = render.renderBody(
+    name, getElementsData(data.layouts[name], data.elements)
+  );
+
+  return `
+<!DOCTYPE html>
+<html>
+${head}
+
+${body}
+
+</html>`;
+}
+
+module.exports.getLayoutHtml = getLayoutHtml;

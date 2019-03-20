@@ -1,64 +1,87 @@
-var url = require('url');
-var fs = require('fs');
+const url = require('url');
+const fs = require('fs');
+const getLayoutHtml = require('./layout').getLayoutHtml;
 
-function renderHtml(path, response) {
-  fs.readFile(path, null, function(error, data) {
-    if (error) {
-      response.writeHead(404);
-      response.end('File not Found');
+const layoutData = {};
+
+function setContentType(response, value) {
+  response.writeHead(200, {'Content-Type': value});
+}
+
+function pathIsImage(path) {
+  let exts = ['.gif', '.png', '.jpg', '.svg', '.bmp'];
+  return exts.some((ext) => {return path.includes(ext)});
+}
+
+function serveImage(path, response) {
+  let ext = path.split(".").pop();
+  setContentType(response, `image/${ext}`);
+  fs.createReadStream(path).pipe(response);
+}
+
+function serveCss(path, response) {
+  setContentType(response, 'text/css');
+  fs.createReadStream(path).pipe(response);
+}
+
+function serveJson(path, response) {
+  setContentType(response, 'application/json');
+  fs.createReadStream(path).pipe(response);
+}
+
+function serveJs(path, response) {
+  setContentType(response, 'application/javascript');
+  fs.createReadStream(path).pipe(response);
+}
+
+function serve404(response) {
+  console.log('bad request');
+  response.writeHead(404, {'Content-Type': 'text/plain'});
+  response.end('404: Bad route / file not found');
+}
+
+function getRequestContent(path) {
+  if (path.includes('.css')) {
+      return (response) => {serveCss(`./${path}`, response);};
+  } else if (pathIsImage(path)) {
+    return (response) => {serveImage(`./${path}`, response);};
+  } else if (path.includes('.js')) {
+    return (response) => {serveJs(`./${path}`, response);};
+  } else if (path.includes('.json')) {
+    return (response) => {serveJson(`./${path}`, response);};
+  }
+}
+
+function serveLayout(path, response) {
+  fs.readFile('./layout.json', 'utf8', (err, data) => {
+    if (err) {
+      throw err;
     } else {
-      if (path.includes('.css')) {
-        response.writeHead(200, {'Content-Type': 'text/css'});
+      Object.assign(layoutData, JSON.parse(data));
+      let name = path.replace('/', '');
+
+      if (layoutData.layouts[name]) {
+        setContentType(response, 'text/html');
+        response.end(getLayoutHtml(name, layoutData));
+
+      } else {
+        serve404(response);
       }
-      response.write(data);
-      response.end();
+
     }
   });
 }
 
-function getPathAsFile(path) {
-  switch (path) {
-    case '/':
-      return './index.html';
-
-    case '/script.js':
-      return './script.js';
-
-    case '/info.json':
-      return './info.json';
-
-    case '/layout.js':
-      return './layout.js';
-
-    case '/layout.json':
-      return './layout.json';
-
-    case '/style.css':
-      return './style.css';
-
-    case '/side-panel.png':
-      return './side-panel.png';
-
-    default:
-      return false;
-  }
-}
-
 module.exports = {
   handleRequest: function (request, response) {
-    response.writeHead(200, {'Content-Type': 'text/html'});
-    var path = url.parse(request.url).pathname;
-    var index = '/';
+    console.log('\n REQUEST MADE: ' + request.url);
+    let serve = getRequestContent(request.url);
 
-    console.log('\n REQUEST MADE: ' + path);
-
-    var file_name = getPathAsFile(path);
-    if (file_name) {
-      renderHtml(file_name, response);
+    if (serve) {
+      serve(response);
     } else {
-      console.log('route undefined: ' + path);
-      response.writeHead(404);
-      response.end();
+      serveLayout(request.url, response);
     }
+
   }
 };

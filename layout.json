@@ -1,0 +1,36 @@
+{
+  "stream": {
+    "size": [1366, 768],
+    "colorkey": [0, 255, 0]
+  },
+
+  "elements": [
+    {
+      "id": "side-panel",
+      "size": [310, 768],
+      "position": [9, 0],
+      "image": "side-panel.png"
+    },
+
+    {
+      "id": "channel-logo",
+      "size": [356, 110],
+      "position": [-6, -2],
+      "image": "ahp-logo.png"
+    },
+
+    {
+      "id": "panel-header",
+      "size": [304, 77],
+      "position": [20, 206],
+      "content": "Very Hard - <i class='stock-count'>(1 Stock)</i>"
+    },
+
+    {
+      "id": "stream-header",
+      "size": [975, 100],
+      "position": [381, 0],
+      "content": "SSB Speed Runs"
+    }
+  ]
+}

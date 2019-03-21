@@ -62,19 +62,19 @@ function getRequestContent(path) {
 function getApiMethod(path) {
   path = path.split('api/')[1];
 
-  if (path.includes('get_layout_elements/')) {
+  if (path.includes('get_layout_elements')) {
     return (request, response) => {
       api.getLayoutElements(request, response);
     };
   }
 
-  if (path.includes('get_layout_content/')) {
+  if (path.includes('get_layout_content')) {
     return (request, response) => {
       api.getLayoutContent(request, response);
     };
   }
 
-  if (path.includes('set_element_content/')) {
+  if (path.includes('set_element_content')) {
     return (request, response) => {
       api.setElementContent(request, response);
     };
@@ -82,8 +82,11 @@ function getApiMethod(path) {
 }
 
 function serveLayout(path, response) {
-  let name = path.replace('/', '');
-  serveHtml('./layout.html', response);
+  if (path.includes('/editor')) {
+    serveHtml('./editor.html', response);
+  } else {
+    serveHtml('./layout.html', response);
+  }
 }
 
 module.exports = {

@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Stream Layout</title>
+  <title>Stream Layout - Editor</title>
 
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../css/editor.css" />
 </head>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="render.js"></script>
-<script src="update.js"></script>
+<script src="../render.js"></script>
+<script src="../update.js"></script>
 
 <script>
 
-
 $(document).ready(() => {
   let layoutName = window.location.pathname.replace('/', '');
-  getLayout(layoutName);
-  setInterval(() => {getContent(layoutName)}, 3000);
+  layoutName = layoutName.replace('/editor', '');
+
+  getEditor(layoutName);
 });
 
 </script>

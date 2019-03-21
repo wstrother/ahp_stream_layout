@@ -1,6 +1,6 @@
 const fs = require('fs');
-const { Writable } = require('stream');
 const layoutFile = 'layout.json';
+const querystring = require('querystring');
 
 function getLayoutData(response, callback) {
   let rs = fs.createReadStream(`./${layoutFile}`, 'utf8');
@@ -26,6 +26,11 @@ function getLayoutData(response, callback) {
     }
   });
 
+}
+
+function setLayoutData(data) {
+  fs.writeFile(`./${layoutFile}`, JSON.stringify(data, null, 2));
+  console.log('updated ' + layoutFile);
 }
 
 function setJsonHeader(response) {
@@ -87,6 +92,30 @@ function getLayoutContent(request, response) {
 }
 
 function setElementContent(request, response) {
+  setJsonHeader(response);
+  let body = '';
+
+  if (request.method === 'POST') {
+    request.on('data', (chunk) => {
+      body = body + chunk.toString();
+    })
+
+    request.on('end', () => {
+      body = querystring.parse(body);
+      getLayoutData(response, (data) => {
+
+        Object.assign(data.elements[body.id], body);
+        response.end(JSON.stringify({
+          success: `${body.id}.content updated to '${body.content}'`
+        }));
+
+        setLayoutData(data);
+      });
+    })
+
+  } else {
+    setJsonError(response, 'bad method, please use POST for "set_element_content"');
+  }
 
 }
 

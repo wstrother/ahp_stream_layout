@@ -1,3 +1,5 @@
+const root = 'http://127.0.0.1:4000';
+
 function getObjAsCss(obj) {
   let props = []
 
@@ -22,7 +24,7 @@ function renderDiv(data) {
   }
 
   if (data.image) {
-    style['background-image'] = `url('${data.image}')`;
+    style['background-image'] = `url('${root}/${data.image}')`;
   }
 
   style = getObjAsCss(style);
@@ -34,10 +36,10 @@ function renderDiv(data) {
 }
 
 function renderBody(name, elements) {
-  let divs = "";
+  let divs = '';
 
   elements.forEach((element) => {
-    divs += "\n" + renderDiv(element);
+    divs += '\n' + renderDiv(element);
   });
 
   return `
@@ -47,4 +49,26 @@ function renderBody(name, elements) {
   </layout>`;
 }
 
-// module.exports.renderBody = renderBody;
+function renderInput(url, name, content) {
+  return `
+  <form method="POST" action="${root + url}">
+    <div class="editor-element">
+      <label for=${name}>${name}:</label>
+      <input name="id" type="hidden" value="${name}" />
+      <input name="content" value="${content}" />
+      <input type="submit" value="Update" />
+    </div>
+  </form>
+  `;
+}
+
+function renderForm(url, elements) {
+  let inputs = '';
+  console.log(elements.length);
+
+  elements.forEach((element) => {
+    inputs = inputs + '\n' + renderInput(url, element.id, element.content);
+  });
+
+  return inputs;
+}

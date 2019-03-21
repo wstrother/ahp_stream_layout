@@ -27,7 +27,7 @@ div {
   overflow: visible;
 }
 
-layout#brb>#stream-header::before {
+#layout-brb>#stream-header::before {
   content: 'BRB with...';
   font-size: 30pt;
   color: white;

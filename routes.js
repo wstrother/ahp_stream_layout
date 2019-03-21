@@ -1,7 +1,7 @@
 const url = require('url');
 const fs = require('fs');
 const getLayoutHtml = require('./layout').getLayoutHtml;
-
+const api = require('./api');
 const layoutData = {};
 
 function setContentType(response, value) {
@@ -34,6 +34,11 @@ function serveJs(path, response) {
   fs.createReadStream(path).pipe(response);
 }
 
+function serveHtml(path, response) {
+  setContentType(response, 'text/html');
+  fs.createReadStream(path).pipe(response);
+}
+
 function serve404(response) {
   console.log('bad request');
   response.writeHead(404, {'Content-Type': 'text/plain'});
@@ -41,8 +46,10 @@ function serve404(response) {
 }
 
 function getRequestContent(path) {
-  if (path.includes('.css')) {
-      return (response) => {serveCss(`./${path}`, response);};
+  if (path.includes('.html')) {
+    return (response) => {serveHtml(`./${path}`, response);};
+  } else if (path.includes('.css')) {
+    return (response) => {serveCss(`./${path}`, response);};
   } else if (pathIsImage(path)) {
     return (response) => {serveImage(`./${path}`, response);};
   } else if (path.includes('.js')) {
@@ -52,24 +59,31 @@ function getRequestContent(path) {
   }
 }
 
+function getApiMethod(path) {
+  path = path.split('api/')[1];
+
+  if (path.includes('get_layout_elements/')) {
+    return (request, response) => {
+      api.getLayoutElements(request, response);
+    };
+  }
+
+  if (path.includes('get_layout_content/')) {
+    return (request, response) => {
+      api.getLayoutContent(request, response);
+    };
+  }
+
+  if (path.includes('set_element_content/')) {
+    return (request, response) => {
+      api.setElementContent(request, response);
+    };
+  };
+}
+
 function serveLayout(path, response) {
-  fs.readFile('./layout.json', 'utf8', (err, data) => {
-    if (err) {
-      throw err;
-    } else {
-      Object.assign(layoutData, JSON.parse(data));
-      let name = path.replace('/', '');
-
-      if (layoutData.layouts[name]) {
-        setContentType(response, 'text/html');
-        response.end(getLayoutHtml(name, layoutData));
-
-      } else {
-        serve404(response);
-      }
-
-    }
-  });
+  let name = path.replace('/', '');
+  serveHtml('./layout.html', response);
 }
 
 module.exports = {
@@ -80,7 +94,18 @@ module.exports = {
     if (serve) {
       serve(response);
     } else {
-      serveLayout(request.url, response);
+      if (request.url.includes('/api/')) {
+        let apiMethod = getApiMethod(request.url);
+
+        if (apiMethod) {
+          apiMethod(request, response);
+        } else {
+          response.writeHead(400);
+          response.end('bad api request ' + request.url);
+        }
+      } else {
+        serveLayout(request.url, response);
+      }
     }
 
   }

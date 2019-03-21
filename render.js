@@ -41,12 +41,10 @@ function renderBody(name, elements) {
   });
 
   return `
-  <body>
-  <layout id="${name}">
+  <layout id="layout-${name}">
   ${divs}
 
-  </layout>
-  </body>`;
+  </layout>`;
 }
 
-module.exports.renderBody = renderBody;
+// module.exports.renderBody = renderBody;

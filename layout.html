@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>test</title>
+
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="render.js"></script>
+
+<script>
+
+const content = {};
+
+function getLayout(name) {
+  fetch(
+    '/api/get_layout_elements/' + name
+  ).then((response) => {
+    return response.json();
+  }).then((json) => {
+    json.forEach((element) => {
+      content[element.id] = element.content || '';
+    });
+    $('body').html(renderBody(name, json));
+    console.log(JSON.stringify(content));
+  });
+}
+
+function compareData(name) {
+  fetch(
+    '/api/get_layout_content/' + name
+  ).then((response) => {
+    return response.json();
+  }).then((json) => {
+    Object.keys(content).forEach((id) => {
+      if (content[id] !== json[id]) {
+        content[id] = json[id];
+        $(`#${id}`).html(json[id]);
+      }
+    });
+    console.log(JSON.stringify(content))
+  })
+}
+
+$(document).ready(() => {
+  const name = window.location.pathname.replace('/', '');
+  getLayout(name);
+  setInterval(() => {compareData(name)}, 3000);
+});
+
+</script>
+
+<body>
+</body>
+</html>

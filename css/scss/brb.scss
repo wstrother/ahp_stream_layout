@@ -1,0 +1,10 @@
+layout#brb {
+  // stream-header
+
+  #stream-header::before {
+    color: white;
+    display: block;
+    content: 'BRB with...';
+    font-size: calc(#{$header-size} * .65);
+  }
+}

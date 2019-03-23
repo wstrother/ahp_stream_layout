@@ -1,5 +1,3 @@
-const root = 'http://127.0.0.1:4000';
-
 function getObjAsCss(obj) {
   let props = []
 
@@ -24,7 +22,7 @@ function renderDiv(data) {
   }
 
   if (data.image) {
-    style['background-image'] = `url('${root}/${data.image}')`;
+    style['background-image'] = `url('${data.image}')`;
   }
 
   style = getObjAsCss(style);
@@ -43,7 +41,7 @@ function renderBody(name, elements) {
   });
 
   return `
-  <layout id="layout-${name}">
+  <layout id="${name}">
   ${divs}
 
   </layout>`;
@@ -51,7 +49,7 @@ function renderBody(name, elements) {
 
 function renderInput(url, name, content) {
   return `
-  <form method="POST" action="${root + url}">
+  <form method="POST" action="${url}">
     <div class="editor-element">
       <label for=${name}>${name}:</label>
       <input name="id" type="hidden" value="${name}" />
@@ -64,11 +62,27 @@ function renderInput(url, name, content) {
 
 function renderForm(url, elements) {
   let inputs = '';
-  console.log(elements.length);
 
   elements.forEach((element) => {
-    inputs = inputs + '\n' + renderInput(url, element.id, element.content);
+    inputs += '\n' + renderInput(url, element.id, element.content);
   });
 
   return inputs;
+}
+
+function renderResults(results) {
+  results = JSON.parse(results);
+  let output = '';
+
+  Object.keys(results).forEach(name => {
+    if (name === 'success') {
+      output += `<div class="editor-success">${results["success"]}</div>`;
+    } else {
+      output += `<div class="editor-change">
+      <strong>${name}:</strong> ${results[name]}
+      </div>`;
+    }
+  });
+
+  return output;
 }

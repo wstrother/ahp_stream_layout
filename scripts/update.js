@@ -61,9 +61,43 @@ function createForm(data) {
     });
   });
 
-  $('body').html(renderForm(setContentApi, elements));
+  $('editor').html(renderForm(setContentApi, elements));
 
-  $('input[type=submit]').click((event) => {
+  let params = {};
+
+  $('form').on("submit", event => {
     event.preventDefault();
+
+    let form = $(event.target);
+    let formID = form.find('input[name="id"]').val();
+    let formContent = form.find('input[name="content"]').val();
+    params[formID] = formContent;
+
+    let resultsElement = $('results');
+    $.ajax({
+        url: `..${setContentApi}`,
+        type: 'POST',
+        dataType: 'html',
+        data: jQuery.param(params),
+
+        beforeSend: function() {
+          resultsElement.html(`<div class="editor-sending">Updating...</div>`);
+        },
+
+        success: function(result, status, xhr) {
+          resultsElement.html(renderResults(result));
+        },
+
+        error: function(xhr, status, err) {
+          if (!err) {err = "No server response";}
+
+          resultsElement.html(
+            `<div class="editor-error">
+            <strong>Error:</strong> ${err}
+            </div>`
+          );
+        }
+    });
+
   });
 }

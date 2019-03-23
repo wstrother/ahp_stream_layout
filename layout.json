@@ -30,6 +30,9 @@
     }
   },
   "elements": {
+    "extra": {
+      "content": "works"
+    },
     "side-panel": {
       "size": [
         310,
@@ -39,7 +42,8 @@
         9,
         18
       ],
-      "image": "side-panel.png"
+      "image": "side-panel.png",
+      "content": ""
     },
     "panel-header": {
       "size": [
@@ -50,7 +54,7 @@
         20,
         206
       ],
-      "content": "Very Hard - <stocks>(1 Stock)</stocks>"
+      "content": "VH - <stocks>1 Stock</stock>"
     },
     "stream-header": {
       "size": [
@@ -61,7 +65,7 @@
         381,
         0
       ],
-      "content": "Hello <em>wurld</em>",
+      "content": "SSB Speedruns",
       "id": "stream-header"
     }
   }

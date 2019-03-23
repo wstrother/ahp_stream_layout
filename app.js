@@ -1,5 +1,4 @@
 const http = require('http');
-const fs = require('fs');
 const routes = require('./routes');
 
 const port = 4000;

@@ -1,88 +1,103 @@
 const url = require('url');
 const fs = require('fs');
-const getLayoutHtml = require('./layout').getLayoutHtml;
+const path = require('path');
 const api = require('./api');
-const layoutData = {};
 
+//
+// response and file serve functions
+//
 function setContentType(response, value) {
   response.writeHead(200, {'Content-Type': value});
 }
 
-function pathIsImage(path) {
+function serveFile(fileName, response, contentType) {
+  setContentType(response, contentType);
+  let file = fs.createReadStream(fileName);
+  file.on('error', (error) => {
+    console.log(error.message);
+    serve404(response);
+  });
+  file.pipe(response);
+}
+
+function urlIsImage(fileName) {
   let exts = ['.gif', '.png', '.jpg', '.svg', '.bmp'];
-  return exts.some((ext) => {return path.includes(ext)});
+  return exts.some((ext) => {return fileName.includes(ext)});
 }
 
-function serveImage(path, response) {
-  let ext = path.split(".").pop();
-  setContentType(response, `image/${ext}`);
-  fs.createReadStream(path).pipe(response);
+function serveImage(fileName, response) {
+  let ext = fileName.split(".").pop();
+  serveFile(`images/${fileName}`, response, `image/${ext}`);
 }
 
-function serveCss(path, response) {
-  setContentType(response, 'text/css');
-  fs.createReadStream(path).pipe(response);
+function serveCss(fileName, response) {
+  serveFile(`css/${fileName}`, response, 'text/css');
 }
 
-function serveJson(path, response) {
-  setContentType(response, 'application/json');
-  fs.createReadStream(path).pipe(response);
+function serveJson(fileName, response) {
+  serveFile(fileName, response, 'application/json');
 }
 
-function serveJs(path, response) {
-  setContentType(response, 'application/javascript');
-  fs.createReadStream(path).pipe(response);
+function serveJs(fileName, response) {
+  serveFile(`scripts/${fileName}`, response, 'application/javascript');
 }
 
-function serveHtml(path, response) {
-  setContentType(response, 'text/html');
-  fs.createReadStream(path).pipe(response);
+function serveHtml(fileName, response) {
+  serveFile(`html/${fileName}`, response, 'text/html');
 }
 
 function serve404(response) {
-  console.log('bad request');
   response.writeHead(404, {'Content-Type': 'text/plain'});
   response.end('404: Bad route / file not found');
 }
 
-function getRequestContent(path) {
-  if (path.includes('.html')) {
-    return (response) => {serveHtml(`./${path}`, response);};
-  } else if (path.includes('.css')) {
-    return (response) => {serveCss(`./${path}`, response);};
-  } else if (pathIsImage(path)) {
-    return (response) => {serveImage(`./${path}`, response);};
-  } else if (path.includes('.js')) {
-    return (response) => {serveJs(`./${path}`, response);};
-  } else if (path.includes('.json')) {
-    return (response) => {serveJson(`./${path}`, response);};
-  }
+function getRequestContent(url) {
+  url = path.basename(url);
+
+  let fileName = `./${url}`;
+  let getFile = [
+    [p => p.includes('.html'), res => serveHtml(fileName, res)],
+    [p => p.includes('.css'), res => serveCss(fileName, res)],
+    [p => urlIsImage(p), res => serveImage(fileName, res)],
+    [p => p.includes('.json'), res => serveJson(fileName, res)],
+    [p => p.includes('.js'), res => serveJs(fileName, res)]
+  ]
+
+  let serve = null;
+
+  getFile.forEach(check => {
+    if (check[0](url)) {
+      serve = check[1];
+    }
+  });
+
+  return serve;
 }
 
-function getApiMethod(path) {
-  path = path.split('api/')[1];
+function getApiMethod(url) {
+  // url = url.split('api/')[1];
 
-  if (path.includes('get_layout_elements')) {
+  if (url.includes('get_layout_elements')) {
     return (request, response) => {
       api.getLayoutElements(request, response);
     };
   }
 
-  if (path.includes('get_layout_content')) {
+  if (url.includes('get_layout_content')) {
     return (request, response) => {
       api.getLayoutContent(request, response);
     };
   }
 
-  if (path.includes('set_element_content')) {
+  if (url.includes('set_element_content')) {
     return (request, response) => {
       api.setElementContent(request, response);
     };
   };
 }
 
-function serveLayout(path, response) {
-  if (path.includes('/editor')) {
+function serveLayout(url, response) {
+  if (url.includes('/editor')) {
     serveHtml('./editor.html', response);
   } else {
     serveHtml('./layout.html', response);

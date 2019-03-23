@@ -1,53 +1,51 @@
-@import url('https://fonts.googleapis.com/css?family=Milonga|Oswald');
+@import url("https://fonts.googleapis.com/css?family=Milonga|Oswald");
+#stream-header, div {
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+
+#stream-header {
+  font-variant: small-caps; }
+
+#stream-header {
+  font-family: "Milonga", "Times New Roman", "serif";
+  font-size: 40pt;
+  color: #bf6816; }
+
+div {
+  font-family: "Oswald", "Arial", "sans-serif";
+  font-size: 14pt;
+  letter-spacing: 3px; }
+
+#side-panel {
+  border: 2px solid rgba(0, 0, 0, 0.55);
+  box-shadow: 5px 1px 12px 2px black; }
+
+layout#speedrun #panel-header stocks {
+  padding-left: 5px;
+  color: #08db21; }
+
+layout#brb #stream-header::before {
+  color: white;
+  display: block;
+  content: 'BRB with...';
+  font-size: calc(40pt * .65); }
 
 div {
   display: flex;
-  color: white;
+  flex-direction: column;
+  overflow: hidden;
   margin: 0;
   padding: 0;
-  text-shadow: 1px 1px 5px black;
-  overflow: hidden;
-  font-family: 'Oswald', sans-serif;
-  letter-spacing: 3px;
-  text-shadow:
-      3px 3px 0 #000,
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-     -1px 1px 0 #000,
-      1px 1px 0 #000;
-}
+  color: white; }
 
 #stream-header {
-  color: darkorange;
-  font-size: 40pt;
-  font-variant: small-caps;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  overflow: visible;
-}
-
-#layout-brb>#stream-header::before {
-  content: 'BRB with...';
-  font-size: 30pt;
-  color: white;
-  display: block;
-}
-
-#panel-header {
-  align-items: center;
-  justify-content: center;
-}
-
-stocks {
-  padding-left: 5px;
-  color: #00FF00;
-}
+  overflow: visible; }
 
 #side-panel {
-  background-image: url('side-panel.png');
-  /*background-origin: border-box;*/
-  background-color: rgb(125, 50, 125);
-  border: 2px solid rgba(0, 0, 0, .55);
-  box-shadow: 5px 1px 12px 2px black;
-}
+  background-color: #a53e9d;
+  display: hidden;
+  z-index: -2; }
+
+#panel-header {
+  align-items: center; }

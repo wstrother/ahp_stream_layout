@@ -2,6 +2,8 @@ const fs = require('fs');
 const layoutFile = 'layout.json';
 const querystring = require('querystring');
 
+//
+// Retrieve data from layoutFile and run callback function
 function getLayoutData(response, callback) {
   let rs = fs.createReadStream(`./${layoutFile}`, 'utf8');
   let data = '';
@@ -28,11 +30,15 @@ function getLayoutData(response, callback) {
 
 }
 
+//
+// Write new data to layoutFile
 function setLayoutData(data) {
   fs.writeFile(`./${layoutFile}`, JSON.stringify(data, null, 2));
   console.log('updated ' + layoutFile);
 }
 
+//
+// JSON response functions
 function setJsonHeader(response) {
   response.writeHead(200, {'Content-Type': 'application/json'});
 }
@@ -44,17 +50,32 @@ function setJsonError(response, message) {
   }));
 }
 
+function setJsonResponse(response, obj) {
+  response.end(JSON.stringify(obj));
+}
+
+//
+// api/get_layout_elements/{name}
+// response [element1, element2...]
+// element {id: name, size: [0, 0], position: [0, 0]...}
+//
 function getLayoutElements(request, response) {
+  setJsonHeader(response);
   let layoutName = request.url.split('/get_layout_elements/')[1];
-  let output = [];
+
+  let sendError = msg => {
+    setJsonError(response, msg);
+  }
 
   getLayoutData(response, (data) => {
     let elements = data.elements;
     let layoutData = data.layouts[layoutName];
 
     if (!layoutData) {
-      setJsonError(response, `No layout found called '${layoutName}'`);
+      sendError(`No layout found called '${layoutName}'`);
+
     } else {
+      let output = [];
 
       layoutData.elements.forEach((element) => {
         output.push(Object.assign({},
@@ -67,47 +88,81 @@ function getLayoutElements(request, response) {
   });
 }
 
+//
+// api/get_layout_content/{name}
+// response {id1: "", id2: ""}
+//
 function getLayoutContent(request, response) {
+  setJsonHeader(response);
   let layoutName = request.url.split('/get_layout_content/')[1];
-  let output = {};
+  let pushContent = (elementsData, names) => {
+    let output = {};
 
-  getLayoutData(response, (data) => {
-    let elements = data.elements;
-    let layoutData = data.layouts[layoutName];
+    names.forEach(name => {
+      output[name] = elementsData[name].content || '';
+    });
 
-    if (!layoutData) {
-      setJsonError(response, `No layout found called '${layoutName}'`);
+    return output;
+  }
+
+  let sendError = msg => {
+    setJsonError(response, msg);
+  };
+
+  getLayoutData(response, data => {
+    let sendContent = names => {
+      setJsonResponse(response, pushContent(data.elements, names));
+    };
+
+    if (layoutName === 'all') {
+      sendContent(Object.keys(data.elements));
     } else {
-      let content = '';
+      let layoutData = data.layouts[layoutName];
 
-      layoutData.elements.forEach((element) => {
-        content = elements[element.id].content;
-        if (!content) {content = '';}
-        output[element.id] = content;
-      });
-      response.end(JSON.stringify(output));
+      if (!layoutData) {
+        sendError(`No layout found called '${layoutName}'`);
 
+      } else {
+        let names = [];
+        layoutData.elements.forEach(element => {
+          names.push(element.id);}
+        );
+
+        sendContent(names);
+      }
     }
   });
 }
 
+//
+// api/set_element_content
+// request {method: "POST", body}
+// body {id1: "", id2: ""...}
+//
 function setElementContent(request, response) {
   setJsonHeader(response);
-  let body = '';
+  let sendError = msg => {
+    setJsonError(response, msg);
+  };
 
   if (request.method === 'POST') {
+    let body = '';
+
     request.on('data', (chunk) => {
       body = body + chunk.toString();
     })
 
     request.on('end', () => {
       body = querystring.parse(body);
-      getLayoutData(response, (data) => {
+      getLayoutData(response, data => {
 
-        Object.assign(data.elements[body.id], body);
-        response.end(JSON.stringify({
-          success: `${body.id}.content updated to '${body.content}'`
-        }));
+        Object.keys(body).forEach(name => {
+          data.elements[name].content = body[name];
+        });
+
+        let successResponse = {success: `${layoutFile} updated!`};
+        Object.assign(successResponse, body);
+        response.end(JSON.stringify(successResponse));
 
         setLayoutData(data);
       });
@@ -120,7 +175,7 @@ function setElementContent(request, response) {
 }
 
 module.exports = {
-  getLayoutElements: getLayoutElements,
-  getLayoutContent: getLayoutContent,
-  setElementContent: setElementContent
+  getLayoutElements,
+  getLayoutContent,
+  setElementContent
 }

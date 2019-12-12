@@ -2,7 +2,7 @@
 
 //
 // fonts
-@import url('https://fonts.googleapis.com/css?family=Milonga|Oswald');
+@import url('https://fonts.googleapis.com/css?family=Oswald|Righteous&display=swap');
 
 @mixin font-style($family, $size) {
   font-family: $family;
@@ -10,14 +10,14 @@
 }
 
 $oswald: 'Oswald', 'Arial', 'sans-serif';
-$milonga: 'Milonga', 'Times New Roman', 'serif';
+$righteous: 'Righteous', 'Times New Roman', 'serif';
 
 @mixin regular-font($size) {
   @include font-style($oswald, $size);
 }
 
 @mixin fancy-font($size) {
-  @include font-style($milonga, $size);
+  @include font-style($righteous, $size);
 }
 
 //
@@ -47,7 +47,7 @@ $milonga: 'Milonga', 'Times New Roman', 'serif';
 %header-text {
   @include fancy-font($header-size);
   @extend %title-shadow;
-  color: $orange;
+  color: $header-color;
 }
 
 %normal-text {
@@ -59,6 +59,70 @@ $milonga: 'Milonga', 'Times New Roman', 'serif';
 //
 // panels
 %panel-shadow {
-  border: 2px solid rgba(0, 0, 0, .55);
+  border: 2px solid rgba(125, 125, 125, 1);
+  border-radius: 10px;
   box-shadow: 5px 1px 12px 2px black;
+}
+
+
+//
+// animation mixins
+// credit: https://codepen.io/jakob-e/pen/vVXeOe
+
+$--animation-timeline-duration: null;
+$--animation-timeline-tweens: null;
+
+//  mixin to create an animation context for nested tweens
+//  used to calculate the total duration of the animation
+//  converting each tween delay into percentages
+@mixin animation-timeline($name: unique-id()) {
+
+    //  global context flag to sum up duration
+    $--animation-timeline-duration: 0s !global;
+
+    //  global context map to hold animation tweens
+    $--animation-timeline-tweens: () !global;
+
+    //  mixin content (the included tweens)
+    @content;
+
+    //  animation name and duration
+    //  note! if no name is provided a unique id will be used
+    //  this allows you to create one-time-use animations without
+    //  having to deal with animation naming conflicts :-)
+    animation-name: $name;
+    animation-duration: $--animation-timeline-duration;
+
+    //  create keyframes
+    @if $--animation-timeline-duration > 0s {
+        @keyframes #{$name} {
+            //  loop through the included tweens
+            @each $time, $props in $--animation-timeline-tweens {
+                //  calculate percentage based on total duration
+                #{percentage($time/$--animation-timeline-duration)} {
+                    //  print out the tween properties
+                    @each $prop, $value in $props {
+                        #{$prop}: $value;
+                    }
+                }
+            }
+        }
+    }
+
+    //  reset global context flags
+    $--animation-timeline-duration: null !global;
+    $--animation-timeline-tweens: null !global;
+}
+
+
+//  mixin to create tweens based on a delay and a map
+//  containing the the tween properties*
+@mixin tween($delay: 0s, $props: null){
+    //  only do stuff if we are in a animation-timeline context
+    @if $--animation-timeline-tweens {
+        //  increment the total animation duration by the the tween delay
+        $--animation-timeline-duration: $--animation-timeline-duration + $delay !global;
+        //  save current duration and tween props to the global tween map
+        $--animation-timeline-tweens: map-merge($--animation-timeline-tweens, ($--animation-timeline-duration: $props)) !global;
+    }
 }

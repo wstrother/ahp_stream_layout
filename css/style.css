@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Milonga|Oswald");
+@import url("https://fonts.googleapis.com/css?family=Oswald|Righteous&display=swap");
 #stream-header, div {
   text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 
@@ -6,17 +6,18 @@
   font-variant: small-caps; }
 
 #stream-header {
-  font-family: "Milonga", "Times New Roman", "serif";
+  font-family: "Righteous", "Times New Roman", "serif";
   font-size: 40pt;
-  color: #bf6816; }
+  color: #7751c6; }
 
 div {
   font-family: "Oswald", "Arial", "sans-serif";
   font-size: 14pt;
   letter-spacing: 3px; }
 
-#side-panel {
-  border: 2px solid rgba(0, 0, 0, 0.55);
+#side-panel, #webcam-panel {
+  border: 2px solid #7d7d7d;
+  border-radius: 10px;
   box-shadow: 5px 1px 12px 2px black; }
 
 layout#speedrun #panel-header stocks {
@@ -43,9 +44,68 @@ div {
   overflow: visible; }
 
 #side-panel {
-  background-color: #a53e9d;
+  background-color: #5e38ac;
   display: hidden;
   z-index: -2; }
 
 #panel-header {
   align-items: center; }
+
+#webcam-panel {
+  background-color: #7d7d7d; }
+
+#links-panel {
+  display: flex;
+  justify-content: flex-end;
+  overflow: visible; }
+  #links-panel content {
+    display: flex;
+    position: relative;
+    height: 50%;
+    width: 100%; }
+  #links-panel [order="1"] {
+    --d: 1
+    ; }
+  #links-panel [order="2"] {
+    --d: 2
+    ; }
+  #links-panel [order="3"] {
+    --d: 3
+    ; }
+  #links-panel [order="4"] {
+    --d: 4
+    ; }
+  #links-panel [order="5"] {
+    --d: 5
+    ; }
+  #links-panel [order="6"] {
+    --d: 6
+    ; }
+  #links-panel [order="7"] {
+    --d: 7
+    ; }
+  #links-panel url {
+    white-space: nowrap;
+    --d: 1;
+    position: absolute;
+    animation-name: links-move;
+    animation-fill-mode: both;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+    animation-delay: calc(9s * (var(--d) - 1));
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    animation-name: ud3b1e0a4;
+    animation-duration: 60s; }
+
+@keyframes ud3b1e0a4 {
+  0% {
+    opacity: 0; }
+  3.33333% {
+    opacity: 1; }
+  11.66667% {
+    opacity: 1; }
+  15% {
+    opacity: 0; }
+  100% {
+    opacity: 0; } }

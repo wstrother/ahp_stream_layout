@@ -1,5 +1,6 @@
 {
   "layouts": {
+
     "speedrun": {
       "elements": [
         {
@@ -10,60 +11,96 @@
         },
         {
           "id": "stream-header"
+        },
+        {
+          "id": "panel-body"
+        },
+        {
+          "id": "webcam-panel"
+        },
+        {
+          "id": "links-panel"
         }
       ]
     },
+
     "brb": {
       "elements": [
+
         {
           "id": "stream-header",
           "position": [
-            191,
-            348
+            164,
+            275
           ],
           "size": [
-            976,
-            100
+            952,
+            60
           ]
         }
+
       ]
     }
   },
+
   "elements": {
-    "extra": {
-      "content": "works"
+
+    "links-panel": {
+      "content":  "<url order=1>twitch.tv/athenshorseparty_</url> <url order=2>!bc - athenshorseparty.bandcamp.com</url> <url order=3>!yt - youtube.com/athenshorseparty</url> <url order=4>!gh - github.com/wstrother</url>",
+      "size": [240, 60],
+      "position": [338, 653]
     },
+
+    "panel-body": {
+      "content": "TEXT HERE ...... ........ ... .... ..... ......... ...... .... ........ ..... ................ ....... .... .......",
+      "size": [
+        200,
+        300
+      ],
+      "position": [
+        50,
+        250
+      ]
+    },
+
     "side-panel": {
       "size": [
         310,
-        750
+        704
       ],
       "position": [
         9,
-        18
+        9
       ],
       "image": "side-panel.png",
       "content": ""
     },
+
+    "webcam-panel": {
+      "size": [192, 145],
+      "position": [65, 50]
+    },
+
     "panel-header": {
       "size": [
         304,
         77
       ],
       "position": [
-        20,
-        206
+        12,
+        198
       ],
-      "content": "VH - <stocks>1 Stock</stock>"
+      "content": "Panel Header"
     },
+
     "stream-header": {
       "size": [
-        975,
-        100
+        952,
+        60
       ],
       "position": [
-        381,
-        0
+        313,
+        5
       ],
       "content": "SSB Speedruns",
       "id": "stream-header"

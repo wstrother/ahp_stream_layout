@@ -153,11 +153,17 @@ function setElementContent(request, response) {
     })
 
     request.on('end', () => {
+      console.log(body);
       body = querystring.parse(body);
-      getLayoutData(response, data => {
 
+      getLayoutData(response, data => {
         Object.keys(body).forEach(name => {
-          data.elements[name].content = body[name];
+          if (data.elements[name]) {
+            data.elements[name].content = body[name];
+          }
+          else {
+            console.log(`No element called ${name} found in ${layoutFile}`);
+          }
         });
 
         let successResponse = {success: `${layoutFile} updated!`};

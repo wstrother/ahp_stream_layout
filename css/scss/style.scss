@@ -40,3 +40,59 @@ div {
 #panel-header {
   align-items: center;
 }
+
+// webcam-panel
+
+#webcam-panel {
+  @extend %panel-shadow;
+  background-color: rgba(125, 125, 125, 1);
+}
+
+// links-panel
+
+$fade-duration: 2s;
+$link-duration: 5s;
+$full-link-duration: ($link-duration + ($fade-duration * 2));
+$full-duration: 60s;
+$max-links: $full-duration / $full-link-duration;
+
+#links-panel {
+  display: flex;
+  justify-content: flex-end;
+  overflow: visible;
+
+  content {
+    display: flex;
+    position: relative;
+    height: 50%;
+    width: 100%;
+  }
+
+  @for $i from 1 through $max-links {
+    [order="#{$i}"] {
+      --d: #{$i}
+    }
+  }
+
+  url {
+    white-space: nowrap;
+    --d: 1;
+    position: absolute;
+    animation-name: links-move;
+    animation-fill-mode: both;
+    animation-duration: $full-duration;
+    animation-iteration-count: infinite;
+    animation-delay: calc(#{$full-link-duration} * (var(--d) - 1);
+
+    @include animation-timeline {
+      animation-iteration-count: infinite;
+      animation-fill-mode: both;
+
+      @include tween(0s, (opacity: 0));
+      @include tween($fade-duration, (opacity: 1));
+      @include tween($link-duration, (opacity: 1));
+      @include tween($fade-duration, (opacity: 0));
+      @include tween(($full-duration - $full-link-duration), (opacity: 0));
+    }
+  }
+}

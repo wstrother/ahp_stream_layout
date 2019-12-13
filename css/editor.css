@@ -1,6 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Milonga|Oswald");
 results > div, .editor-element {
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+  text-shadow: -1px -1px 0 #000,
+ 1px -1px 0 #000,
+ -1px 1px 0 #000,
+ 1px 1px 0 #000; }
 
 results > div, .editor-element {
   border: 2px solid rgba(0, 0, 0, 0.55);
@@ -13,7 +15,6 @@ body {
 results > div {
   width: 330px;
   letter-spacing: 3px;
-  font-family: "Oswald", "Arial", "sans-serif";
   font-size: calc(14pt + 2pt);
   background-color: rgba(0, 0, 0, 0.25);
   margin: 10px;
@@ -36,7 +37,6 @@ results > div {
   width: 330px;
   margin: 10px;
   letter-spacing: 3px;
-  font-family: "Oswald", "Arial", "sans-serif";
   font-size: 14pt;
   color: white; }
   .editor-element label {
@@ -45,7 +45,6 @@ results > div {
     margin: 2px; }
   .editor-element input[type=submit] {
     letter-spacing: 3px;
-    font-family: "Oswald", "Arial", "sans-serif";
     font-size: 14pt;
     border: 1px solid black;
     border-radius: 2px;

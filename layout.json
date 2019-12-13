@@ -1,6 +1,6 @@
 {
   "layouts": {
-    "speedrun": {
+    "example": {
       "elements": [
         {
           "id": "side-panel"
@@ -12,27 +12,10 @@
           "id": "stream-header"
         }
       ]
-    },
-    "brb": {
-      "elements": [
-        {
-          "id": "stream-header",
-          "position": [
-            191,
-            348
-          ],
-          "size": [
-            976,
-            100
-          ]
-        }
-      ]
     }
   },
+
   "elements": {
-    "extra": {
-      "content": "works"
-    },
     "side-panel": {
       "size": [
         310,
@@ -42,7 +25,6 @@
         9,
         18
       ],
-      "image": "side-panel.png",
       "content": ""
     },
     "panel-header": {
@@ -54,8 +36,9 @@
         20,
         206
       ],
-      "content": "VH - <stocks>1 Stock</stock>"
+      "content": "Panel Header"
     },
+    "id": "stream-header",
     "stream-header": {
       "size": [
         975,
@@ -65,8 +48,7 @@
         381,
         0
       ],
-      "content": "SSB Speedruns",
-      "id": "stream-header"
+      "content": "Stream Header"
     }
   }
 }

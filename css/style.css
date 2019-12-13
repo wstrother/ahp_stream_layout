@@ -1,33 +1,24 @@
-@import url("https://fonts.googleapis.com/css?family=Milonga|Oswald");
 #stream-header, div {
-  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+  text-shadow: 3px 3px 0 #000,
+ -1px -1px 0 #000,
+ 1px -1px 0 #000,
+ -1px 1px 0 #000,
+ 1px 1px 0 #000; }
 
 #stream-header {
   font-variant: small-caps; }
 
 #stream-header {
-  font-family: "Milonga", "Times New Roman", "serif";
   font-size: 40pt;
   color: #bf6816; }
 
 div {
-  font-family: "Oswald", "Arial", "sans-serif";
   font-size: 14pt;
   letter-spacing: 3px; }
 
 #side-panel {
   border: 2px solid rgba(0, 0, 0, 0.55);
   box-shadow: 5px 1px 12px 2px black; }
-
-layout#speedrun #panel-header stocks {
-  padding-left: 5px;
-  color: #08db21; }
-
-layout#brb #stream-header::before {
-  color: white;
-  display: block;
-  content: 'BRB with...';
-  font-size: calc(40pt * .65); }
 
 div {
   display: flex;
@@ -43,7 +34,7 @@ div {
   overflow: visible; }
 
 #side-panel {
-  background-color: #a53e9d;
+  background-color: gray;
   display: hidden;
   z-index: -2; }
 

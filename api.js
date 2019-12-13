@@ -33,7 +33,9 @@ function getLayoutData(response, callback) {
 //
 // Write new data to layoutFile
 function setLayoutData(data) {
-  fs.writeFile(`./${layoutFile}`, JSON.stringify(data, null, 2));
+  fs.writeFile(`./${layoutFile}`, JSON.stringify(data, null, 2),
+    (err, result) => {if(err) console.log("error", err);}
+  );
   console.log('updated ' + layoutFile);
 }
 

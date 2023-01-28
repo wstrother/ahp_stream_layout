@@ -17,6 +17,7 @@
 !.travis.yml
 !.eslintrc.yaml
 
+layout.json
 core
 vgcore.*
 v8*.log

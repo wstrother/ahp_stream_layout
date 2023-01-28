@@ -20,6 +20,7 @@
 # layout app customizations
 layout.json
 css/style.css
+images/*
 
 core
 vgcore.*
